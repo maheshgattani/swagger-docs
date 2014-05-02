@@ -90,14 +90,15 @@ module Swagger
 
         def camelize_keys_deep!(h)
           h.keys.each do |k|
-            ks    = k.to_s
-            #ks    = k.to_s.camelize(:lower)
-            h[ks] = h.delete k
-            camelize_keys_deep! h[ks] if h[ks].kind_of? Hash
-            if h[ks].kind_of? Array
-              h[ks].each do |a|
-                next unless a.kind_of? Hash
-                camelize_keys_deep! a
+            unless ks == :properties
+              ks    = k.to_s.camelize(:lower)
+              h[ks] = h.delete k
+              camelize_keys_deep! h[ks] if h[ks].kind_of? Hash
+              if h[ks].kind_of? Array
+                h[ks].each do |a|
+                  next unless a.kind_of? Hash
+                  camelize_keys_deep! a
+                end
               end
             end
           end
