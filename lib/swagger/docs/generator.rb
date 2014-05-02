@@ -92,8 +92,6 @@ module Swagger
           h.keys.each do |k|
             ks    = k.to_s
             #ks    = k.to_s.camelize(:lower)
-            File.open("/tmp/out.txt", 'a') {|f| f.write(ks) }
-            File.open("/tmp/out.txt", 'a') {|f| f.write("\n") }
             h[ks] = h.delete k
             camelize_keys_deep! h[ks] if h[ks].kind_of? Hash
             if h[ks].kind_of? Array
@@ -126,8 +124,6 @@ module Swagger
         def process_path(path, root, config, settings)
           return {action: :skipped, reason: :empty_path} if path.empty?
           klass = "#{path.to_s.camelize}Controller".constantize rescue nil
-          File.open("/tmp/process_path.txt", 'a') {|f| f.write(path) }
-          File.open("/tmp/process_path.txt", 'a') {|f| f.write("\n") }
           return {action: :skipped, path: path, reason: :klass_not_present} if !klass
           return {action: :skipped, path: path, reason: :not_swagger_resource} if !klass.methods.include?(:swagger_config) or !klass.swagger_config[:controller]
           apis, models = [], {}
@@ -142,8 +138,6 @@ module Swagger
         def generate_resource(path, apis, models, settings, root, config)
           debased_path = get_debased_path(path, settings[:controller_base_path])
           demod = "#{debased_path.to_s.camelize}".demodulize.camelize.underscore
-          File.open("/tmp/generate_resource.txt", 'a') {|f| f.write(debased_path) }
-          File.open("/tmp/generate_resource.txt", 'a') {|f| f.write("\n") }
           resource_path = trim_leading_slash(debased_path.to_s.underscore)
           resource = root.merge({:resource_path => "#{demod}", :apis => apis})
           camelize_keys_deep!(resource)
