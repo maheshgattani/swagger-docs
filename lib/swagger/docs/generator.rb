@@ -94,7 +94,7 @@ module Swagger
             if k.to_s != "properties" || config[:skip_model_property_camelization] === false
               ks    = k.to_s.camelize(:lower)
               h[ks] = h.delete k
-              camelize_keys_deep!(h[ks] if h[ks].kind_of? Hash, config)
+              camelize_keys_deep!(h[ks], config) if h[ks].kind_of? Hash
               if h[ks].kind_of? Array
                 h[ks].each do |a|
                   next unless a.kind_of? Hash
