@@ -73,7 +73,7 @@ module Swagger
             end
           end
           root[:resources] = resources
-          camelize_keys_deep!(root)
+          #camelize_keys_deep!(root)
           results[:root] = root
           results
         end
@@ -90,8 +90,7 @@ module Swagger
 
         def camelize_keys_deep!(h)
           h.keys.each do |k|
-            ks    = k.to_s
-            #ks    = k.to_s.camelize(:lower)
+            ks    = k.to_s.camelize(:lower)
             h[ks] = h.delete k
             camelize_keys_deep! h[ks] if h[ks].kind_of? Hash
             if h[ks].kind_of? Array
@@ -140,7 +139,7 @@ module Swagger
           demod = "#{debased_path.to_s.camelize}".demodulize.camelize.underscore
           resource_path = trim_leading_slash(debased_path.to_s.underscore)
           resource = root.merge({:resource_path => "#{demod}", :apis => apis})
-          camelize_keys_deep!(resource)
+          #camelize_keys_deep!(resource)
           # Add the already-normalized models to the resource.
           resource = resource.merge({:models => models}) if models.present?
           resource[:resource_file_path] = resource_path
