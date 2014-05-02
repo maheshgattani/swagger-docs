@@ -7,7 +7,7 @@ module Swagger
         :api_file_path => "public/",
         :base_path => "/",
         :clean_directory => false,
-        :formatting => :pretty
+        :formatting => :pretty,
 	:skip_model_property_camelization => true
       }
 
