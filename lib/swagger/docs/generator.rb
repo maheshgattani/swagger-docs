@@ -90,7 +90,7 @@ module Swagger
 
         def camelize_keys_deep!(h)
           h.keys.each do |k|
-            unless ks == :properties
+            unless k == "properties"
               ks    = k.to_s.camelize(:lower)
               h[ks] = h.delete k
               camelize_keys_deep! h[ks] if h[ks].kind_of? Hash
