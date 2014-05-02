@@ -8,6 +8,7 @@ module Swagger
         :base_path => "/",
         :clean_directory => false,
         :formatting => :pretty
+	:skip_model_property_camelization => true
       }
 
       class << self
@@ -73,7 +74,7 @@ module Swagger
             end
           end
           root[:resources] = resources
-          camelize_keys_deep!(root)
+          camelize_keys_deep!(root, config)
           results[:root] = root
           results
         end
@@ -88,16 +89,16 @@ module Swagger
           trim_slashes(api_path)
         end
 
-        def camelize_keys_deep!(h)
+        def camelize_keys_deep!(h, config)
           h.keys.each do |k|
-            unless k.to_s == "properties"
+            if k.to_s != "properties" || config[:skip_model_property_camelization] === false
               ks    = k.to_s.camelize(:lower)
               h[ks] = h.delete k
-              camelize_keys_deep! h[ks] if h[ks].kind_of? Hash
+              camelize_keys_deep!(h[ks] if h[ks].kind_of? Hash, config)
               if h[ks].kind_of? Array
                 h[ks].each do |a|
                   next unless a.kind_of? Hash
-                  camelize_keys_deep! a
+                  camelize_keys_deep!(a, config)
                 end
               end
             end
@@ -141,7 +142,7 @@ module Swagger
           demod = "#{debased_path.to_s.camelize}".demodulize.camelize.underscore
           resource_path = trim_leading_slash(debased_path.to_s.underscore)
           resource = root.merge({:resource_path => "#{demod}", :apis => apis})
-          camelize_keys_deep!(resource)
+          camelize_keys_deep!(resource, config)
           # Add the already-normalized models to the resource.
           resource = resource.merge({:models => models}) if models.present?
           resource[:resource_file_path] = resource_path
